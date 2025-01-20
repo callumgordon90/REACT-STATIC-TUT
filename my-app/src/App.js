@@ -27,6 +27,9 @@ function productRow({product}){
     );
 }
 
+
+
+//Hard coded data from API to be handled by the react application
 const PRODUCTS = [
   {category: "Fruits", price: "$1", stocked: true, name: "Apple"},
   {category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit"},
@@ -38,4 +41,6 @@ const PRODUCTS = [
 
 
 
-export default FilterableProductTable;
+export default function App(){
+  return <FilterableProductTable products={PRODUCTS}/>
+}
