@@ -1,4 +1,6 @@
+import React from 'react';
 import { useState } from 'react';
+import './index.css';
 
 function FilterableProductTable({ products }) {
   const [filterText, setFilterText] = useState('');
