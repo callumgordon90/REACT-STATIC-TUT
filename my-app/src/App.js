@@ -1,35 +1,107 @@
-import React, { Component } from 'react';
-import './App.css';
+import { useState } from 'react';
 
-//Lowest component
-function productCategoryRow({category}){
-  return(
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  return (
+    <div>
+      <SearchBar 
+        filterText={filterText} 
+        inStockOnly={inStockOnly} />
+      <ProductTable 
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly} />
+    </div>
+  );
+}
+
+function ProductCategoryRow({ category }) {
+  return (
     <tr>
-      <th colSpan={"2"}>
+      <th colSpan="2">
         {category}
       </th>
     </tr>
   );
 }
 
-//Second lowest component
-function productRow({product}){
+function ProductRow({ product }) {
   const name = product.stocked ? product.name :
-    <span style = {{ color: 'red'}}>
+    <span style={{ color: 'red' }}>
       {product.name}
     </span>;
 
-    return(
-      <tr>
-        <td>{name}</td>
-        <td>{product.price}</td>
-      </tr>
-    );
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{product.price}</td>
+    </tr>
+  );
 }
 
+function ProductTable({ products, filterText, inStockOnly }) {
+  const rows = [];
+  let lastCategory = null;
 
+  products.forEach((product) => {
+    if (
+      product.name.toLowerCase().indexOf(
+        filterText.toLowerCase()
+      ) === -1
+    ) {
+      return;
+    }
+    if (inStockOnly && !product.stocked) {
+      return;
+    }
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category} />
+      );
+    }
+    rows.push(
+      <ProductRow
+        product={product}
+        key={product.name} />
+    );
+    lastCategory = product.category;
+  });
 
-//Hard coded data from API to be handled by the react application
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  );
+}
+
+function SearchBar({ filterText, inStockOnly }) {
+  return (
+    <form>
+      <input 
+        type="text" 
+        value={filterText} 
+        placeholder="Search..."/>
+      <label>
+        <input 
+          type="checkbox" 
+          checked={inStockOnly} />
+        {' '}
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+
 const PRODUCTS = [
   {category: "Fruits", price: "$1", stocked: true, name: "Apple"},
   {category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit"},
@@ -37,10 +109,8 @@ const PRODUCTS = [
   {category: "Vegetables", price: "$2", stocked: true, name: "Spinach"},
   {category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin"},
   {category: "Vegetables", price: "$1", stocked: true, name: "Peas"}
-]
+];
 
-
-
-export default function App(){
-  return <FilterableProductTable products={PRODUCTS}/>
+export default function App() {
+  return <FilterableProductTable products={PRODUCTS} />;
 }
