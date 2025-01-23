@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import './index.css';
 
+//The parent component of all
 function FilterableProductTable({ products }) {
   const [filterText, setFilterText] = useState('');
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -10,7 +11,11 @@ function FilterableProductTable({ products }) {
     <div>
       <SearchBar 
         filterText={filterText} 
-        inStockOnly={inStockOnly} />
+        inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly}
+
+        />
       <ProductTable 
         products={products}
         filterText={filterText}
